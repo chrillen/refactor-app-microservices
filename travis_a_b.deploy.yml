@@ -1,0 +1,22 @@
+language: minimal
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.23.2
+
+before_build:
+  - mkdir ${HOME}/.kube
+  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+
+build:
+  #A/B deploy
+  - kubectl create deployment frontend --image=udacity-frontend:latest
+  - kubectl scale deployment frontend --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-feed --image=udactiy-restapi-feed:latest
+  - kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-user --image=udactiy-restapi-feed:latest
+  - kubectl scale deployment backend-user --current-replicas=1 --replicas=2
+  - kubectl create deployment reverseproxy --image=reverseproxy:latest
+  - kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2

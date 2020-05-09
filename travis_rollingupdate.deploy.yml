@@ -1,0 +1,17 @@
+language: minimal
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.23.2
+
+before_build:
+  - mkdir ${HOME}/.kube
+  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+
+build:
+  -- kubectl rollout restart deployment reverseproxy
+  -- kubectl rollout restart deployment backend-feed
+  -- kubectl rollout restart deployment backend-user
+  -- kubectl rollout restart deployment frontend

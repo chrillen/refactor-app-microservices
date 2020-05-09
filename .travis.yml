@@ -1,0 +1,52 @@
+language: minimal
+
+services: docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.23.2
+
+before_install:
+  - mkdir ${HOME}/.kube
+  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+  - docker -v && docker-compose -v
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+  - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel 
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+install:
+  - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml push
+
+after_install:
+  - kubectl apply -f udacity-c3-deployment/k8s/aws-secret.yaml
+  - kubectl apply -f udacity-c3-deployment/k8s/env-configmap.yaml
+  - kubectl apply -f udacity-c3-deployment/k8s/env-secret.yaml
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-deployment.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-service.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-user-deployment.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-user-service.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/reverseproxy-deployment.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/reverseproxy-service.yaml
+  - kubectl apply -f udacity-c3-deployment/k8s/frontend-deployment.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/frontend-service.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/pod/pod.yaml 
+  #A/B deploy we will do for our deployments.
+  - kubectl create deployment frontend --image=chrillen/udacity-frontend:latest
+  - kubectl scale deployment frontend --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-feed --image=chrillen/udactiy-restapi-feed:latest
+  - kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-user --image=chrillen/udactiy-restapi-feed:latest
+  - kubectl scale deployment backend-user --current-replicas=1 --replicas=2
+  - kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest
+  - kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2
+  #rolling update
+  #-- kubectl rollout restart deployment reverseproxy
+  #-- kubectl rollout restart deployment backend-feed
+  #-- kubectl rollout restart deployment backend-user
+  #-- kubectl rollout restart deployment frontend
+
