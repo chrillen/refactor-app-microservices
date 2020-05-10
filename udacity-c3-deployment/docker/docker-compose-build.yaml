@@ -14,7 +14,7 @@ services:
     image: chrillen/udacity-restapi-feed
   backend_imagefilter:
     build:
-      context: ../../udacity-c3-restapi-imagefilter  
+      context: ../../udacity-c3-restapi-imagefilter 
     image: chrillen/udacity-restapi-imagefilter
   frontend:
     build:
