@@ -1,21 +1,28 @@
+[![Build Status](https://travis-ci.com/chrillen/refactor-app-microservices.svg?branch=master&status=passed)](https://travis-ci.com/github/chrillen/refactor-app-microservices.svg)
+
 # Refactor Udagram App into Microservices and Deploy, Assignment 4 of udacity course.
 
-## The system Consists of 3 applications running NodeJs express.
+## The system Consists of 4 applications running NodeJs express.
 
-# The frontend service is a ionic app that communicate with the reverse proxy that act as a API gateway to route the path to correct microservice.
-# The reverse proxy is just a nginx server acting as a reverse proxy its runned in a docker container only so its not something you run locally.
-# feed api is a nodejs application that is fetching all data from the PostegreSQL database that is runned from AWS RDS Service and is communicating with S3 to get url's to each image.
-# user api is a nodejs application that is handling the authentication and user registration of the services, We generate JWT tokens and store the login information in PostgreSQL database that is hosted in AWS RDS Service.
+#### The frontend service is a ionic app that communicate with the reverse proxy that act as a API gateway to route the path to correct microservice.
+#### The reverse proxy is just a nginx server acting as a reverse proxy its runned in a docker container only so its not something you run locally.
+#### feed api is a nodejs application that is fetching all data from the PostegreSQL database that is runned from AWS RDS Service and is communicating with S3 to get url's to each image.
+#### user api is a nodejs application that is handling the authentication and user registration of the services, We generate JWT tokens and store the login information in PostgreSQL database that is hosted in AWS RDS Service.
+#### image filter api is a nodejs application is a simple service that takes a image url as input and returns a image blob with the processed image.
+
 
 ### The project is split into three parts:
 1. [The Simple Frontend](/udacity-c3-frontend) A basic Ionic client web application which consumes the RestAPI Backend. 
 2. [The RestAPI Feed Backend](/udacity-c3-restapi-feed), a Node-Express feed microservice.
 3. [The RestAPI User Backend](/udacity-c3-restapi-user), a Node-Express user microservice.
-4. [Nginx as a reverse-proxy server](/udacity-c3-deployment/docker), when different backend services are running on the same port, then a reverse proxy server directs client requests to the appropriate backend server and retrieves resources on behalf of the client.  
+4. [The RestAPI Image filter backend](/udacity-c3-restapi-imagefilter), a Node-Express microservice for adding filter to image.
+5. [Nginx as a reverse-proxy server](/udacity-c3-deployment/docker), when different backend services are running on the same port, then a reverse proxy server directs client requests to the appropriate backend server and retrieves resources on behalf of the client.  
 
 ### You start each microservice like this:
 1. `cd udacity-c3-restapi-user` and `npm install`
 2. `cd udacity-c3-restapi-feed` and `npm install`
+3. `cd udacity-c3-frontend` and `npm install`
+
 
 ### You start each microservice like this:
 1. `cd udacity-c3-frontend` and `ionic serve`
@@ -61,16 +68,17 @@
 ## Deployment
 
 todo:
-Image of get pods commad screen shoot.
+Image of get pods cmd screen shoot.
 image of travis ci deployments.
 image of the application.
+image of cloudwatch logs
 
 
 ### For handling rolling update
   1. kubectl rollout restart deployment reverseproxy
   2. kubectl rollout restart deployment backend-feed
-  3.  kubectl rollout restart deployment backend-user
-  4.  kubectl rollout restart deployment frontend
+  3. kubectl rollout restart deployment backend-user
+  4. kubectl rollout restart deployment frontend
 
 ### Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
 

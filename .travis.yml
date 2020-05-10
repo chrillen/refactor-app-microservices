@@ -21,8 +21,6 @@ before_install:
 
 install:
   - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml push
-
-after_install:
   - kubectl apply -f udacity-c3-deployment/k8s/aws-secret.yaml
   - kubectl apply -f udacity-c3-deployment/k8s/env-configmap.yaml
   - kubectl apply -f udacity-c3-deployment/k8s/env-secret.yaml
@@ -49,4 +47,5 @@ after_install:
   #-- kubectl rollout restart deployment backend-feed
   #-- kubectl rollout restart deployment backend-user
   #-- kubectl rollout restart deployment frontend
+
 
