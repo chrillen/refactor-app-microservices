@@ -6,6 +6,10 @@ env:
   - DOCKER_COMPOSE_VERSION=1.23.2
 
 before_install:
+  - ./eks_credentials.sh
+  - if ! [ -x "$(command -v aws)" ]; then curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" ; unzip awscliv2.zip ; sudo ./aws/install ; fi
+  - chmod +x ./aws-iam-authenticator 
+  - sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator 
   - mkdir ${HOME}/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
   - docker -v && docker-compose -v
@@ -26,6 +30,8 @@ install:
   - kubectl apply -f udacity-c3-deployment/k8s/env-secret.yaml
   - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-deployment.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/backend-feed-service.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-imagefilter-deployment.yaml 
+  - kubectl apply -f udacity-c3-deployment/k8s/backend-imagefilter-service.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/backend-user-deployment.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/backend-user-service.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/reverseproxy-deployment.yaml 
@@ -38,6 +44,8 @@ install:
   - kubectl scale deployment frontend --current-replicas=1 --replicas=2
   - kubectl create deployment backend-feed --image=chrillen/udactiy-restapi-feed:latest
   - kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-imagefilter --image=chrillen/udactiy-restapi-imagefilter:latest
+  - kubectl scale deployment backend-imagefilter --current-replicas=1 --replicas=2
   - kubectl create deployment backend-user --image=chrillen/udactiy-restapi-feed:latest
   - kubectl scale deployment backend-user --current-replicas=1 --replicas=2
   - kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest
@@ -46,6 +54,7 @@ install:
   #-- kubectl rollout restart deployment reverseproxy
   #-- kubectl rollout restart deployment backend-feed
   #-- kubectl rollout restart deployment backend-user
+  #-- kubectl rollout restart deployment backend-imagefilter
   #-- kubectl rollout restart deployment frontend
 
 

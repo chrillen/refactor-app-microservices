@@ -21,13 +21,16 @@
 ### You start each microservice like this:
 1. `cd udacity-c3-restapi-user` and `npm install`
 2. `cd udacity-c3-restapi-feed` and `npm install`
-3. `cd udacity-c3-frontend` and `npm install`
+3. `cd udacity-c3-restapi-imagefilter` and `npm install`
+4. `cd udacity-c3-frontend` and `npm install`
 
 
 ### You start each microservice like this:
 1. `cd udacity-c3-frontend` and `ionic serve`
 2. `cd udacity-c3-restapi-user` and `npm run dev`
 3. `cd udacity-c3-restapi-feed` and `npm run dev`
+4. `cd udacity-c3-restapi-imagefilter` and `npm run dev`
+
 
 ### Below is setup of travis (/.travis.yml) is the configuration of my CI/CD build.
 ![image of Travis ci setup](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/travis-ci.PNG)
@@ -49,13 +52,20 @@
 1. start by running `cd udacity-c3-restapi-user`
 2. Build the image: `docker build -t chrillen/udacity-restapi-user .`
 3. Push the image to dockerhub: `docker push chrillen/udacity-restapi-user`
-4. Run the container: `docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed chrillen/udacity-restapi-user`
+4. Run the container: `docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name user chrillen/udacity-restapi-user`
+
+# Build docker image per project: udacity-c3-restapi-imagefilter
+1. start by running `cd udacity-c3-restapi-imagefilter`
+2. Build the image: `docker build -t chrillen/udacity-restapi-imagefilter .`
+3. Push the image to dockerhub: `docker push chrillen/udacity-restapi-imagefilter`
+4. Run the container: `docker run --rm --publish 8082:8082 --env JWT_SECRET=$JWT_SECRET --name imagefilter chrillen/udacity-restapi-imagefilter`
+
 
 # Build docker image per project: udacity-c3-frontend
 1. start by running `cd udacity-c3-frontend`
 2. Build the image: `docker build -t chrillen/udacity-frontend .`
 3. Push the image to dockerhub: `docker push chrillen/udacity-frontend`
-4. Run the container: `docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed chrillen/udacity-frontend`
+4. Run the container: `docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name frontend chrillen/udacity-frontend`
 
 # Build docker image per project: reverseproxy
 1. start by running `cd udacity-c3-deployment/docker`
@@ -77,8 +87,9 @@ image of cloudwatch logs
 ### For handling rolling update
   1. kubectl rollout restart deployment reverseproxy
   2. kubectl rollout restart deployment backend-feed
-  3. kubectl rollout restart deployment backend-user
-  4. kubectl rollout restart deployment frontend
+  3. kubectl rollout restart deployment backend-imagefilter
+  4. kubectl rollout restart deployment backend-user
+  5. kubectl rollout restart deployment frontend
 
 ### Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
 
@@ -90,5 +101,7 @@ Below is the commands for running all the applications doing A/B deployment of t
   4. kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
   5. kubectl create deployment backend-user --image=chrillen/udactiy-restapi-feed:latest
   6. kubectl scale deployment backend-user --current-replicas=1 --replicas=2
-  7. kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest
-  8. kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2
+  7. kubectl create deployment backend-imagefilter --image=chrillen/udactiy-restapi-imagefilter:latest
+  8. kubectl scale deployment backend-imagefilter --current-replicas=1 --replicas=2
+  9. kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest
+  10. kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2

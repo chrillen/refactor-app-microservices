@@ -1,27 +1,21 @@
 import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
-import { NextFunction } from 'connect';
-import * as jwt from 'jsonwebtoken';
+import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
-import * as c from '../../../../config/config';
+import axios  from 'axios';
+import { request } from 'https';
+import { config } from '../../../../config/config';
+import fs from 'fs';
+import { Base64 } from 'js-base64';
+import FormData  from 'form-data';
+
+
+
+const c = config.dev;
 
 const router: Router = Router();
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
-    if (!req.headers || !req.headers.authorization){
-        return res.status(401).send({ message: 'No authorization headers.' });
-    }
-  
-   const token_bearer = req.headers.authorization.split(' ');
-   const token = token_bearer[1].split(',')[0];
-
-     return jwt.verify(token, c.config.jwt.secret , (err, decoded) => {
-       if (err) {
-         return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
-       }
-       return next();
-     });
- }
+const imageFilterPrefix = 'processed-';
 
 // Get all feed items
 router.get('/', async (req: Request, res: Response) => {
@@ -30,14 +24,21 @@ router.get('/', async (req: Request, res: Response) => {
             if(item.url) {
                 item.url = AWS.getGetSignedUrl(item.url);
             }
+            if(item.processedUrl) {
+                item.processedUrl = AWS.getGetSignedUrl(item.processedUrl);
+            }
     });
     res.send(items);
 });
 
-// Get a specific resource
-router.get('/:id', 
-    async (req: Request, res: Response) => {
-    let { id } = req.params;
+router.get('/:id', async (req: Request, res: Response) => {
+      const { id } = req.params;
+
+        // check Id is valid
+        if (!id) {
+            return res.status(400).send({ message: 'id is required' });
+        }
+
     const item = await FeedItem.findByPk(id);
     res.send(item);
 });
@@ -46,8 +47,26 @@ router.get('/:id',
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+    const caption = req.body.caption;
+    const fileName = req.body.url;
+    const { id } = req.params;
+
+    if ( !id || !caption || !fileName ) {
+        return res.status(400).send({ message: 'id , caption, filename is required' });
+    }
+
+    const [numberOfAffectedRows, affectedRows] = await FeedItem.update({ 
+        caption: caption,
+        url: fileName
+      }, {
+        where: {id: id},
+        returning: true
+      })
+
+      if(numberOfAffectedRows > 0)      
+        res.status(200).send(affectedRows);
+    
+    res.status(404).send({ message: 'feed with id is not found!' });
 });
 
 
@@ -59,6 +78,34 @@ router.get('/signed-url/:fileName',
     const url = AWS.getPutSignedUrl(fileName);
     res.status(201).send({url: url});
 });
+
+//functions for communicating with image-filter and send to aws S3
+async function callImageFilterAndUploadToAws(req: Request,url: string,key: string) : Promise<boolean> {
+    return new Promise(function(resolve, reject) {
+        const token_bearer = req.headers.authorization.split(' ');
+        const token = token_bearer[1].split(',')[0];
+     axios({
+        headers: {
+            Authorization: "Bearer " + token
+         },
+        method: 'get',
+        url: c.image_filter_url + Base64.encode(url) + '&encoded=true',
+        responseType: 'stream'
+      })
+    .then(function (response) {
+        const s3Url = AWS.getPutSignedUrl(key);
+        var data = AWS.UploadFile(response.data,key);
+        data.then(
+            function(data) {                
+                resolve(true);
+            },
+            function(err) {
+                reject(err);
+            }
+          );
+        });
+    });
+}
 
 // Post meta data and the filename after a file is uploaded 
 // NOTE the file name is they key name in the s3 bucket.
@@ -81,12 +128,22 @@ router.post('/',
 
     const item = await new FeedItem({
             caption: caption,
-            url: fileName
+            url: fileName,
+            processedUrl: imageFilterPrefix + fileName
     });
 
     const saved_item = await item.save();
-
     saved_item.url = AWS.getGetSignedUrl(saved_item.url);
+
+    //Call image filter service and then send streams it to s3 aws
+    const image = await callImageFilterAndUploadToAws(req, saved_item.url, saved_item.processedUrl)
+    .catch((err) => { 
+           console.log(err);
+           return res.status(422).send({ message: 'unable to process image' });
+    })
+
+    saved_item.processedUrl = AWS.getGetSignedUrl(saved_item.processedUrl);
+    
     res.status(201).send(saved_item);
 });
 

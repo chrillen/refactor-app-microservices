@@ -2,12 +2,27 @@ version: "3"
 services:
   reverseproxy:
       image: chrillen/reverseproxy
+      volumes:
+      - $HOME/.aws:/root/.aws
+      environment:
+        AWS_REGION: $AWS_REGION 
+        AWS_PROFILE: $AWS_PROFILE 
+        AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY 
       ports:
-          - 8080:8080
+        - 8080:8080
       restart: always
       depends_on:
         - backend-user
-        - backend-feed     
+        - backend-feed
+        - backend-imagefilter
+      logging: 
+        driver: "awslogs"    
+        options:
+          awslogs-region: "us-east-1"
+          awslogs-create-group: "true"
+          awslogs-group: "udagram-docker-logging"
+          awslogs-stream: "udagram-docker-stream"
   backend-user:
     image: chrillen/udacity-restapi-user
     environment:
@@ -18,8 +33,19 @@ services:
       AWS_REGION: $AWS_REGION 
       AWS_PROFILE: $AWS_PROFILE 
       AWS_BUCKET: $AWS_BUCKET
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
+    volumes:
+      - $HOME/.aws:/root/.aws
+    logging: 
+      driver: "awslogs"    
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-create-group: "true"
+        awslogs-group: "udagram-docker-logging"
+        awslogs-stream: "udagram-docker-stream"
   backend-feed:
     image: chrillen/udacity-restapi-feed
     volumes:
@@ -32,15 +58,51 @@ services:
       AWS_REGION: $AWS_REGION 
       AWS_PROFILE: $AWS_PROFILE 
       AWS_BUCKET: $AWS_BUCKET
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
+    logging: 
+      driver: "awslogs"    
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-create-group: "true"
+        awslogs-group: "udagram-docker-logging"
+        awslogs-stream: "udagram-docker-stream"
+  backend-imagefilter:
+    image: chrillen/udacity-restapi-imagefilter
+    environment:
+      JWT_SECRET: $JWT_SECRET
+      AWS_REGION: $AWS_REGION 
+      AWS_PROFILE: $AWS_PROFILE 
+      AWS_BUCKET: $AWS_BUCKET
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      URL: "http://localhost:8082"
+    volumes:
+      - $HOME/.aws:/root/.aws
+    logging: 
+      driver: "awslogs"    
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-create-group: "true"
+        awslogs-group: "udagram-docker-logging"
+        awslogs-stream: "udagram-docker-stream"
   frontend:
     image: chrillen/udacity-frontend
+    environment:
+      AWS_REGION: $AWS_REGION 
+      AWS_PROFILE: $AWS_PROFILE 
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    volumes:
+      - $HOME/.aws:/root/.aws
     ports:
       - "8100:80"
-  logging: 
-    driver: "awslogs"
-    options:
-      awslogs-region: "us-east-1"
-      awslogs-group: "udagram-docker-logging"
-      awslogs-stream: "udagram-docker-stream"
+    logging: 
+      driver: "awslogs"    
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-create-group: "true"
+        awslogs-group: "udagram-docker-logging"
+        awslogs-stream: "udagram-docker-stream"

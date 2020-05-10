@@ -1,6 +1,5 @@
 import {Table, Column, Model, HasMany, PrimaryKey, CreatedAt, UpdatedAt, ForeignKey} from 'sequelize-typescript';
 
-
 @Table
 export class FeedItem extends Model<FeedItem> {
   @Column
@@ -8,6 +7,9 @@ export class FeedItem extends Model<FeedItem> {
 
   @Column
   public url!: string;
+
+  @Column
+  public processedUrl!: string;
 
   @Column
   @CreatedAt
