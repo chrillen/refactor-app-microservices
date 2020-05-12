@@ -8,7 +8,7 @@ export const config = {
     "aws_reigion": process.env.AWS_REGION,
     "aws_profile": process.env.AWS_PROFILE,
     "aws_media_bucket": process.env.AWS_BUCKET,
-    "url": process.env.URL || 'http://acc13704c7cf941be9cc36b29ea77da4-855504895.us-east-1.elb.amazonaws.com:8100',
+    "url": process.env.URL,
     "image_filter_url" : process.env.IMAGE_FILTER_URL || 'http://localhost:8082/filteredimage?image_url='    
   },
   "prod": {
