@@ -152,6 +152,12 @@ router.post('/',
     const saved_item = await item.save();
     saved_item.url = AWS.getGetSignedUrl(saved_item.url);
 
+        //Call image filter service and then send streams it to s3 aws
+        const image = await callImageFilterAndUploadToAws(req, saved_item.url, saved_item.processedUrl)
+        .catch((err) => { 
+               console.log(err);
+               return res.status(422).send({ message: 'unable to process image' });
+        })
 
     saved_item.processedUrl = AWS.getGetSignedUrl(saved_item.processedUrl);
     
