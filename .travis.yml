@@ -27,7 +27,6 @@ before_install:
 
 install:
   - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml push
-  - curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/udagram/;s/{{region_name}}/us-east-1/" | kubectl apply -f -
   - kubectl apply -f udacity-c3-deployment/k8s/aws-secret.yaml
   - kubectl apply -f udacity-c3-deployment/k8s/env-configmap.yaml
   - kubectl apply -f udacity-c3-deployment/k8s/env-secret.yaml
@@ -42,5 +41,6 @@ install:
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-deployment.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-service.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/pod/pod.yaml 
+  - curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/udagram/;s/{{region_name}}/us-east-1/" | kubectl apply -f -
 
 
