@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/chrillen/refactor-app-microservices.svg?branch=master&status=passed)](https://travis-ci.com/github/chrillen/refactor-app-microservices.svg)
+[![Build Status](https://travis-ci.com/chrillen/refactor-app-microservices.svg?branch=master)](https://api.travis-ci.com/chrillen/refactor-app-microservices.svg)
 
 # Refactor Udagram App into Microservices and Deploy, Assignment 4 of udacity course.
 
@@ -30,7 +30,6 @@
 2. `cd udacity-c3-restapi-user` and `npm run dev`
 3. `cd udacity-c3-restapi-feed` and `npm run dev`
 4. `cd udacity-c3-restapi-imagefilter` and `npm run dev`
-
 
 ### Below is setup of travis (/.travis.yml) is the configuration of my CI/CD build.
 ![image of Travis ci setup](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/travis-ci.PNG)
@@ -82,15 +81,19 @@
 4. https://hub.docker.com/repository/docker/chrillen/reverseproxy
 5. https://hub.docker.com/repository/docker/chrillen/udacity-frontend
 
-
 ## Deployment
-
 todo:
-Image of get pods cmd screen shoot.
-image of travis ci deployments.
 image of the application.
-image of cloudwatch logs
 
+### Below is images of kubernetes pods running in AWS EKS
+![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/kubernetes_pods.PNG)
+
+### Below is images of travis ci deploy
+![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/travis_deploy.PNG)
+
+### Below is images of cloudwatch logs from containers and metrics from Kubernetes cluster.
+![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch.PNG)
+![image of cloudwatch metrics](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch_metrics.PNG)
 
 ### For handling rolling update
   1. `kubectl rollout restart deployment reverseproxy`
