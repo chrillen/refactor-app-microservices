@@ -1,14 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
-import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
 import axios  from 'axios';
-import { request } from 'https';
 import { config } from '../../../../config/config';
-import fs from 'fs';
 import { Base64 } from 'js-base64';
-import FormData  from 'form-data';
-
+import { NextFunction } from 'connect';
+import * as jwt from 'jsonwebtoken';
 
 
 const c = config.dev;
@@ -16,6 +13,27 @@ const c = config.dev;
 const router: Router = Router();
 
 const imageFilterPrefix = 'processed-';
+
+// requireAuth
+// helper function validate jwt tokens in header
+// INPUTS
+//   Request: from client, Response: back to client, NextFunction: used for skip routes in express.
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+
+    if (!req.headers || !req.headers.authorization){
+        return res.status(401).send({ message: 'No authorization headers.' });
+    }
+  
+   const token_bearer = req.headers.authorization.split(' ');
+   const token = token_bearer[1].split(',')[0];
+  
+    return jwt.verify(token , config.jwt.secret, (err, decoded) => {
+      if (err) {
+        return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
+      }
+      return next();
+    });
+  }
 
 // Get all feed items
 router.get('/', async (req: Request, res: Response) => {
@@ -93,10 +111,9 @@ async function callImageFilterAndUploadToAws(req: Request,url: string,key: strin
         responseType: 'stream'
       })
     .then(function (response) {
-        const s3Url = AWS.getPutSignedUrl(key);
         var data = AWS.UploadFile(response.data,key);
         data.then(
-            function(data) {                
+            function() {                
                 resolve(true);
             },
             function(err) {
@@ -135,12 +152,6 @@ router.post('/',
     const saved_item = await item.save();
     saved_item.url = AWS.getGetSignedUrl(saved_item.url);
 
-    //Call image filter service and then send streams it to s3 aws
-    const image = await callImageFilterAndUploadToAws(req, saved_item.url, saved_item.processedUrl)
-    .catch((err) => { 
-           console.log(err);
-           return res.status(422).send({ message: 'unable to process image' });
-    })
 
     saved_item.processedUrl = AWS.getGetSignedUrl(saved_item.processedUrl);
     

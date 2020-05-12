@@ -28,4 +28,12 @@ spec:
             configMapKeyRef:
               name: env-config
               key: JWT_SECRET
+        volumeMounts:
+        - name: aws-secret
+          mountPath: "/root/.aws/"
+          readOnly: true        
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: aws-secret 
       restartPolicy: Always      

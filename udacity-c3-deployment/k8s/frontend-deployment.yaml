@@ -24,6 +24,14 @@ spec:
             cpu: "100m"
           limits:
             memory: "1024Mi"
-            cpu: "500m"                
+            cpu: "500m" 
+        volumeMounts:
+        - name: aws-secret
+          mountPath: "/root/.aws/"
+          readOnly: true        
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: aws-secret 
       restartPolicy: Always
 

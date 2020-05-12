@@ -16,13 +16,6 @@ services:
         - backend-user
         - backend-feed
         - backend-imagefilter
-      logging: 
-        driver: "awslogs"    
-        options:
-          awslogs-region: "us-east-1"
-          awslogs-create-group: "true"
-          awslogs-group: "udagram-docker-logging"
-          awslogs-stream: "udagram-docker-stream"
   backend-user:
     image: chrillen/udacity-restapi-user
     environment:
@@ -39,13 +32,6 @@ services:
       URL: "http://localhost:8100"
     volumes:
       - $HOME/.aws:/root/.aws
-    logging: 
-      driver: "awslogs"    
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "udagram-docker-logging"
-        awslogs-stream: "udagram-docker-stream"
   backend-feed:
     image: chrillen/udacity-restapi-feed
     volumes:
@@ -62,13 +48,6 @@ services:
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
-    logging: 
-      driver: "awslogs"    
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "udagram-docker-logging"
-        awslogs-stream: "udagram-docker-stream"
   backend-imagefilter:
     image: chrillen/udacity-restapi-imagefilter
     environment:
@@ -81,13 +60,6 @@ services:
       URL: "http://localhost:8082"
     volumes:
       - $HOME/.aws:/root/.aws
-    logging: 
-      driver: "awslogs"    
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "udagram-docker-logging"
-        awslogs-stream: "udagram-docker-stream"
   frontend:
     image: chrillen/udacity-frontend
     environment:
@@ -99,10 +71,3 @@ services:
       - $HOME/.aws:/root/.aws
     ports:
       - "8100:80"
-    logging: 
-      driver: "awslogs"    
-      options:
-        awslogs-region: "us-east-1"
-        awslogs-create-group: "true"
-        awslogs-group: "udagram-docker-logging"
-        awslogs-stream: "udagram-docker-stream"

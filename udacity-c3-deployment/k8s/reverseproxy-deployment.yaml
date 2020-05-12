@@ -24,6 +24,13 @@ spec:
             cpu: "500m"       
         ports:
         - containerPort: 8080
+      volumeMounts:
+        - name: aws-secret
+          mountPath: "/root/.aws/"
+          readOnly: true        
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: aws-secret 
       restartPolicy: Always
-
 
