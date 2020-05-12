@@ -14,4 +14,5 @@ build:
   -- kubectl rollout restart deployment reverseproxy
   -- kubectl rollout restart deployment backend-feed
   -- kubectl rollout restart deployment backend-user
+  -- kubectl rollout restart deployment backend-imagefilter
   -- kubectl rollout restart deployment frontend

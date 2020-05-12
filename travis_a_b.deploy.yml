@@ -16,7 +16,9 @@ build:
   - kubectl scale deployment frontend --current-replicas=1 --replicas=2
   - kubectl create deployment backend-feed --image=udactiy-restapi-feed:latest
   - kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
-  - kubectl create deployment backend-user --image=udactiy-restapi-feed:latest
+  - kubectl create deployment backend-user --image=udactiy-restapi-user:latest
   - kubectl scale deployment backend-user --current-replicas=1 --replicas=2
+  - kubectl create deployment backend-imagefilter --image=udactiy-restapi-imagefilter:latest
+  - kubectl scale deployment backend-imagefilter --current-replicas=1 --replicas=2
   - kubectl create deployment reverseproxy --image=reverseproxy:latest
   - kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2

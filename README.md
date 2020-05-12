@@ -93,7 +93,7 @@ image of the application.
 
 ### Below is images of cloudwatch logs from containers and metrics from Kubernetes cluster.
 ![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch.PNG)
-![image of cloudwatch metrics](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch_metrics.PNG)
+![image of cloudwatch metrics](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch_metrics.png)
 
 ### For handling rolling update
   1. `kubectl rollout restart deployment reverseproxy`
