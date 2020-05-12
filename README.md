@@ -75,6 +75,14 @@
 
 ![image of dockerhub](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/docker-hub.PNG)
 
+# Links to Dockerhub images per Application
+1. https://hub.docker.com/repository/docker/chrillen/udacity-restapi-feed
+2. https://hub.docker.com/repository/docker/chrillen/udacity-restapi-user
+3. https://hub.docker.com/repository/docker/chrillen/udacity-restapi-imagefilter
+4. https://hub.docker.com/repository/docker/chrillen/reverseproxy
+5. https://hub.docker.com/repository/docker/chrillen/udacity-frontend
+
+
 ## Deployment
 
 todo:
@@ -85,23 +93,23 @@ image of cloudwatch logs
 
 
 ### For handling rolling update
-  1. kubectl rollout restart deployment reverseproxy
-  2. kubectl rollout restart deployment backend-feed
-  3. kubectl rollout restart deployment backend-imagefilter
-  4. kubectl rollout restart deployment backend-user
-  5. kubectl rollout restart deployment frontend
+  1. `kubectl rollout restart deployment reverseproxy`
+  2. `kubectl rollout restart deployment backend-feed`
+  3. `kubectl rollout restart deployment backend-imagefilter`
+  4. `kubectl rollout restart deployment backend-user`
+  5. `kubectl rollout restart deployment frontend`
 
 ### Two versions - 'A' and 'B' of the same application can run simultaneously and serve the traffic
 
 Below is the commands for running all the applications doing A/B deployment of the application.
 
-  1. kubectl create deployment frontend --image=chrillen/udacity-frontend:latest
-  2. kubectl scale deployment frontend --current-replicas=1 --replicas=2
-  3. kubectl create deployment backend-feed --image=chrillen/udactiy-restapi-feed:latest
-  4. kubectl scale deployment backend-feed --current-replicas=1 --replicas=2
-  5. kubectl create deployment backend-user --image=chrillen/udactiy-restapi-feed:latest
-  6. kubectl scale deployment backend-user --current-replicas=1 --replicas=2
-  7. kubectl create deployment backend-imagefilter --image=chrillen/udactiy-restapi-imagefilter:latest
-  8. kubectl scale deployment backend-imagefilter --current-replicas=1 --replicas=2
-  9. kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest
-  10. kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2
+  1. `kubectl create deployment frontend --image=chrillen/udacity-frontend:latest`
+  2. `kubectl scale deployment frontend --current-replicas=1 --replicas=2`
+  3. `kubectl create deployment backend-feed --image=chrillen/udactiy-restapi-feed:latest`
+  4. `kubectl scale deployment backend-feed --current-replicas=1 --replicas=2`
+  5. `kubectl create deployment backend-user --image=chrillen/udactiy-restapi-feed:latest`
+  6. `kubectl scale deployment backend-user --current-replicas=1 --replicas=2`
+  7. `kubectl create deployment backend-imagefilter --image=chrillen/udactiy-restapi-imagefilter:latest`
+  8. `kubectl scale deployment backend-imagefilter --current-replicas=1 --replicas=2`
+  9. `kubectl create deployment reverseproxy --image=chrillen/reverseproxy:latest`
+  10. `kubectl scale deployment reverseproxy --current-replicas=1 --replicas=2`

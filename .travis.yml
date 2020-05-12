@@ -41,4 +41,4 @@ install:
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-deployment.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-service.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/pod/pod.yaml 
-  - curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/master/k8s-yaml-templates/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/udagram/;s/{{region_name}}/us-east-1/" | kubectl apply -f -
+  - kubectl apply -f udacity-c3-deployment/k8s/cwagent-fluentd-quickstart.yaml

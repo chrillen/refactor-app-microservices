@@ -8,6 +8,7 @@ data:
   POSTGRESS_DB: udagramdev
   POSTGRESS_HOST: udagramdev.che9mqn0iviv.us-east-1.rds.amazonaws.com
   URL: http://localhost:8100  
+  IMAGE_FILTER_URL: backend-imagefilter:8082/filteredimage?image_url=
 metadata:
   name: env-config
   
