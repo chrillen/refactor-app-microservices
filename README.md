@@ -84,7 +84,7 @@
 ## Deployment
 
 ### Below is images of the application Udagram running inside kubernetes cluster on AWS EKS
-![image of application udagram](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/udagram.PNG)
+![image of application udagram](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/udagram-application.PNG)
 
 ### Below is images of kubernetes pods running in AWS EKS
 ![image of kubernetes pods](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/kubernetes_pods.PNG)

@@ -41,7 +41,7 @@ install:
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-deployment.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/frontend-service.yaml 
   - kubectl apply -f udacity-c3-deployment/k8s/pod/pod.yaml 
-  - kubectl apply -f udacity-c3-deployment/k8s/cwagent-fluentd-quickstart.yaml
+  #- kubectl apply -f udacity-c3-deployment/k8s/cwagent-fluentd-quickstart.yaml
   #run Rolling update afterwards
   - kubectl rollout restart deployment reverseproxy
   - kubectl rollout restart deployment backend-feed
