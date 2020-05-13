@@ -10,6 +10,7 @@ import { V0MODELS } from './controllers/v0/model.index';
 const c = config.dev;
 
 (async () => {
+
   await sequelize.addModels(V0MODELS);
   await sequelize.sync();
 
@@ -36,6 +37,7 @@ const c = config.dev;
   // Start the Server
   app.listen( port, () => {
       console.log( `server running ` + c.url );
+      console.log( `server running ` + port );
       console.log( `press CTRL+C to stop server` );
   } );
 })();

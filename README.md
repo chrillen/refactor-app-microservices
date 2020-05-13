@@ -70,7 +70,7 @@
 1. start by running `cd udacity-c3-deployment/docker`
 2. Build the image: `docker build -t chrillen/reverseproxy .`
 3. Push the image to dockerhub: `docker push chrillen/reverseproxy`
-4. Run the container: `docker build -t chrillen/reverseproxy . `
+4. Run the container: `docker run --rm --publish 8080:8080 --name reversproxy chrillen/reverseproxy`
 
 ![image of dockerhub](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/docker-hub.PNG)
 
@@ -82,14 +82,15 @@
 5. https://hub.docker.com/repository/docker/chrillen/udacity-frontend
 
 ## Deployment
-todo:
-image of the application.
+
+### Below is images of the application Udagram running inside kubernetes cluster on AWS EKS
+![image of application udagram](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/udagram.PNG)
 
 ### Below is images of kubernetes pods running in AWS EKS
-![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/kubernetes_pods.PNG)
+![image of kubernetes pods](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/kubernetes_pods.PNG)
 
 ### Below is images of travis ci deploy
-![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/travis_deploy.PNG)
+![image of travis deployments](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/travis_deploy.PNG)
 
 ### Below is images of cloudwatch logs from containers and metrics from Kubernetes cluster.
 ![image of cloudwatch logs](https://github.com/chrillen/refactor-app-microservices/blob/master/images-of-completion/cloudwatch.PNG)
